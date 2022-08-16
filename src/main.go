@@ -1,9 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
+	"io/fs"
 	"io/ioutil"
 	"log"
+	"text_processing/src/parse"
 )
 
 var (
@@ -13,14 +16,18 @@ var (
 func srcFlagParse() {
 	// 读取src文件的内容
 	if *srcFlag != "" {
-		b, err := ioutil.ReadFile(*srcFlag)
+		tpp := parse.NewTextParseProject(*srcFlag)
+		b, err := json.Marshal(tpp)
 		if err != nil {
-			log.Fatal(err)
+			log.Panic(err.Error())
 		}
-		// 将读取的内容转换为string
-		s := string(b)
-		// 输出文件内容
-		log.Println(s)
+
+		// golang 写入文件
+		err2 := ioutil.WriteFile("build/data.json", b, fs.ModeAppend)
+		if err2 != nil {
+			log.Panic(err2.Error())
+		}
+
 	}
 }
 
