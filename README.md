@@ -15,14 +15,14 @@ go mod tidy
    ```shell
    git clone https://github.com/aiShuiJiaoDeXioShou/text_processing.git
    go mod tidy
-   go build src main.go
+   go build src btools.go
    或者
    go mod tidy
    ./build.sh
    ```
 2. 下载现成的
 
-   [windows main.exe](https://github.com/aiShuiJiaoDeXioShou/text_processing/raw/d29312c2aa59590ed04ceeba1722a239d99d7722/build/main.exe)
+   [windows btools.exe](https://github.com/aiShuiJiaoDeXioShou/text_processing/raw/d29312c2aa59590ed04ceeba1722a239d99d7722/build/main.exe)
 
 ## 使用手册
 
@@ -32,8 +32,6 @@ go mod tidy
 
 ![1661584408190](image/README/1661584408190.png)
 
-
 ![1661584521355](image/README/1661584521355.png)
-
 
 ![1661584536339](image/README/1661584536339.png)
