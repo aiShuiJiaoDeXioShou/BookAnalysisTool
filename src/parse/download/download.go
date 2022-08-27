@@ -1,4 +1,4 @@
-package parse
+package download
 
 import (
 	"bufio"
@@ -17,6 +17,8 @@ import (
 const (
 	// 歌书网的搜索链接
 	baseUrl = "http://www.gebiqu.com/modules/article/search.php?searchkey="
+	// 放置下载资源的地方
+	downloadPath = "C:\\Users\\Public\\Documents\\小说\\"
 )
 
 type SearchBook struct {
@@ -117,7 +119,18 @@ func OpenDownload(filename string, downloadPath string) {
 	}
 	defer res.Body.Close()
 	// 获得get请求响应的reader对象
-	reader := bufio.NewReaderSize(res.Body, 32*1024)
+	reader := bufio.NewReader(res.Body)
+
+	// 判断downloadPath文件夹是否存在,不存在则创建
+	_, filePathIsExistErr := os.Lstat(downloadPath)
+	if filePathIsExistErr != nil {
+		fmt.Println("A error occurred!")
+		// 创建文件夹
+		err2 := os.MkdirAll(downloadPath, 0777)
+		if os.IsNotExist(err2) {
+			fmt.Println("创建文件夹失败!")
+		}
+	}
 
 	file, err := os.Create(downloadPath + fileName)
 	if err != nil {
@@ -131,16 +144,28 @@ func OpenDownload(filename string, downloadPath string) {
 }
 
 // 下载歌书网所有有关斗破苍穹的图书
-func DownloadBook(name string) {
+func DownloadAllBook(name string, downPath string) {
 	var wg sync.WaitGroup
 	sb := SearchBookNameUrl(name)
 	wg.Add(len(sb))
 	for i := 0; i < len(sb); i++ {
 		go func(i int) {
-			OpenDownload(sb[i].DownloadUrl, "C:\\Users\\28322\\Desktop\\text_processing\\src\\res\\")
+			OpenDownload(sb[i].DownloadUrl, downPath)
 			wg.Done()
 		}(i)
 	}
 	wg.Wait()
 	fmt.Println("Downloaded Done!")
+}
+
+// 下载指定书籍
+func DownloadBook(name string, downPath string) {
+	sb := SearchBookNameUrl(name)
+	for _, s := range sb {
+		if s.Title == name {
+			OpenDownload(s.DownloadUrl, downPath)
+			return
+		}
+	}
+	OpenDownload(sb[0].DownloadUrl, downPath)
 }
