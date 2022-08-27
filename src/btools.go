@@ -1,8 +1,8 @@
 package main
 
 import (
-	"BookAnalysisTool/src/parse"
 	"BookAnalysisTool/src/parse/download"
+	"BookAnalysisTool/src/parse/paragraphparser"
 	"bytes"
 	"encoding/json"
 	"flag"
@@ -68,7 +68,7 @@ func commParse() {
 }
 
 func srcFlagParse() {
-	tpp := parse.NewTextParseProject(*srcFlag)
+	tpp := paragraphparser.NewParagraphParser(*srcFlag)
 	b, err := json.Marshal(tpp)
 	if err != nil {
 		log.Panic(err.Error())
