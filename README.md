@@ -20,9 +20,9 @@ go mod tidy
    go mod tidy
    ./build.sh
    ```
-2. 下载构建好的windows版本软件
+2. 下载现成的
 
-   [main.exe](https://github.com/aiShuiJiaoDeXioShou/text_processing/raw/d29312c2aa59590ed04ceeba1722a239d99d7722/build/main.exe)
+   [windows main.exe](https://github.com/aiShuiJiaoDeXioShou/text_processing/raw/d29312c2aa59590ed04ceeba1722a239d99d7722/build/main.exe)
 
 ## 使用手册
 
