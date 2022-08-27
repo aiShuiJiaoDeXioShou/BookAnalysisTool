@@ -1,13 +1,13 @@
 package parse
 
 import (
+	"BookAnalysisTool/src/comm/strtools"
+	"BookAnalysisTool/src/config"
 	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"strings"
-	"text_processing/src/comm/strtools"
-	"text_processing/src/config"
 )
 
 type TextParseProject struct {

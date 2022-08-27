@@ -1,4 +1,4 @@
-module text_processing
+module BookAnalysisTool
 
 go 1.18
 

@@ -1,11 +1,11 @@
 package main
 
 import (
+	download "BookAnalysisTool/src/parse/download"
 	"encoding/json"
 	"fmt"
 	"os"
 	"testing"
-	download "text_processing/src/parse/download"
 )
 
 func Test2019(t *testing.T) {
@@ -19,7 +19,7 @@ func Test2019(t *testing.T) {
 }
 
 func Test2020(t *testing.T) {
-	download.OpenDownload("http://down.gebiqu.com/txt/168070/斗破苍穹.txt", "C:\\Users\\28322\\Desktop\\text_processing\\src\\res\\")
+	download.OpenDownload("http://down.gebiqu.com/txt/168070/斗破苍穹.txt", "C:\\Users\\28322\\Desktop\\BookAnalysisTool\\src\\res\\")
 }
 
 func Test2021(t *testing.T) {

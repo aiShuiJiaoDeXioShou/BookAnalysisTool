@@ -1,6 +1,8 @@
 package main
 
 import (
+	"BookAnalysisTool/src/parse"
+	"BookAnalysisTool/src/parse/download"
 	"bytes"
 	"encoding/json"
 	"flag"
@@ -8,8 +10,6 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"text_processing/src/parse"
-	"text_processing/src/parse/download"
 	"time"
 )
 
