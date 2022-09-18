@@ -1,6 +1,7 @@
 package main
 
 import (
+	"BookAnalysisTool/src/gui"
 	"BookAnalysisTool/src/parse/download"
 	"BookAnalysisTool/src/parse/paragraphparser"
 	"bytes"
@@ -22,6 +23,8 @@ var (
 	downTerm       *string
 	downTermAll    *string
 	d              *string
+	openWorkSpace  *string
+	guibool            *bool
 )
 
 func main() {
@@ -38,8 +41,19 @@ func main() {
 	// 搜索指定名称相关的书籍并下载
 	downTermAll = flag.String("down-all-term", "", "搜索指定名称相关的书籍并下载")
 
+	// 开启GUI动态网页
+	guibool = flag.Bool("gui", false, "开启图形化界面")
+
 	// 指定下载位置
-	d = flag.String("d", "C:/Users/Public/Documents/小说", "指定文件下载位置")
+	d = flag.String(
+		"d",
+		"C:/Users/Public/Documents/小说/",
+		`指定文件下载位置
+		--默认下载地址C:/Users/Public/Documents/小说/`)
+
+	// 打开工作区间
+	openWorkSpace = flag.String("openWorkSpace", "C:/Users/Public/Documents/", "打开工作区间，进行创作")
+
 	commParse()
 }
 
@@ -65,6 +79,20 @@ func commParse() {
 	if *downTermAll != "" {
 		downTermAllParse()
 	}
+
+	// 打开工作区间
+	if *openWorkSpace != "" {
+		openWorkSpaceParse()
+	}
+
+	// 打开gui
+	if *guibool {
+		gui.Exec()
+	}
+}
+
+func openWorkSpaceParse() {
+
 }
 
 func srcFlagParse() {
