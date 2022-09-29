@@ -18,13 +18,21 @@ go mod tidy
    go build src btools.go
    或者
    go mod tidy
-   ./build.sh
+   ./构建.sh
    ```
 2. 下载现成的
 
    [windows btools.exe](https://github.com/aiShuiJiaoDeXioShou/text_processing/raw/d29312c2aa59590ed04ceeba1722a239d99d7722/build/main.exe)
 
 ## 使用手册
+
+在控制台上使用命令：
+
+```shell
+./btools.exe --help # 该命令显示可用的命令列表
+or
+./btools.exe --gui # 该命令会打开一个网址，及是应用程序地点
+```
 
 书籍信息的统计，章节信息的分析。
 

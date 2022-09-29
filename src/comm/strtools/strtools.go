@@ -1,6 +1,10 @@
 package strtools
 
-import "strings"
+import (
+	"bytes"
+	"encoding/json"
+	"strings"
+)
 
 // 将整段文字转化为一个自然段数组,并且去掉单行空格
 func SplitTextParagraphs(text string) []string {
@@ -29,4 +33,13 @@ func RmSuffix(str string) (strname string) {
 	strname = strname[:i]
 
 	return
+}
+
+// 将对象转化为json对象,并且格式化该对象
+func MyJsonFormat(project any) (string, error) {
+	// sb 转json字符串
+	b, err := json.Marshal(project)
+	var str bytes.Buffer
+	json.Indent(&str, b, " ", "    ")
+	return str.String(), err
 }

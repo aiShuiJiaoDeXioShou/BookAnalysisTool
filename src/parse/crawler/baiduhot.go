@@ -1,20 +1,28 @@
-package main
+package crawler
 
 import (
-	"BookAnalysisTool/src/parse/crawler"
-	"BookAnalysisTool/src/parse/download"
-	"log"
-	"testing"
-
 	"github.com/PuerkitoBio/goquery"
 	"github.com/gocolly/colly"
 	"github.com/gocolly/colly/extensions"
 )
 
-// 爬虫练习bilibili
-func TestPanchon(t *testing.T) {
+type BaiDuBookHotSearch struct {
+	Image     string `json:"image"`
+	Title     string `json:"title"`
+	Author    string `json:"author"`
+	Type      string `json:"type"`
+	Details   string `json:"details"`
+	HotNumber string `json:"hotnumber"`
+	Number    string `json:"number"`
+}
+
+// 百度热搜榜，可见数据
+func BaiDuCrawler(typestr string) *[]BaiDuBookHotSearch {
+	if typestr == "" {
+		typestr = "全部类型"
+	}
 	var queryId = "#sanRoot > main > div.container.right-container_2EFJr > div > div:nth-child(2) > .category-wrap_iQLoo"
-	var hotBooks []crawler.BaiDuBookHotSearch
+	var hotBooks []BaiDuBookHotSearch
 	c := colly.NewCollector(
 		// colly.AllowedDomains("https://top.baidu.com/board?platform=pc&tab=novel&tag={'category':'全部类型'}"),
 		colly.Async(true),
@@ -28,7 +36,7 @@ func TestPanchon(t *testing.T) {
 	extensions.RandomUserAgent(c)
 	c.OnHTML(queryId, func(h *colly.HTMLElement) {
 		h.DOM.Each(func(i int, s *goquery.Selection) {
-			var book crawler.BaiDuBookHotSearch
+			var book BaiDuBookHotSearch
 			// 取到封面数据
 			imgUrl, _ := s.Find(".img-wrapper_29V76>img").Attr("src")
 			book.Image = imgUrl
@@ -52,14 +60,10 @@ func TestPanchon(t *testing.T) {
 
 			hotBooks = append(hotBooks, book)
 		})
-		log.Printf("感觉没有爱情%v", hotBooks)
 	})
 	// 来开始爬bilibili
-	c.Visit("https://top.baidu.com/board?platform=pc&tab=novel&tag={'category':'全部类型'}")
+	c.Visit("https://top.baidu.com/board?platform=pc&tab=novel&tag={'category':'" + typestr + "'}")
 	// 这个函数要放在最后面
 	c.Wait()
-}
-
-func TestBaiDuPaChon(t *testing.T) {
-	download.BaiDuSearchBook()
+	return &hotBooks
 }

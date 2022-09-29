@@ -169,3 +169,32 @@ func DownloadBook(name string, downPath string) {
 	}
 	OpenDownload(sb[0].DownloadUrl, downPath)
 }
+
+// 获取网络热门书籍
+// 百度数据榜
+func BaiDuSearchBook() {
+	var searchBookUrl = "https://top.baidu.com/board?platform=pc&tab=novel&tag={'category':'全部类型'}"
+	res, err := http.Get(searchBookUrl)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer res.Body.Close()
+	if res.StatusCode != 200 {
+		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+	}
+
+	d, err := goquery.NewDocumentFromReader(res.Body)
+
+	if err != nil {
+		panic("页面没有找到，请确认链接的正确性！")
+	}
+	book_nodes := d.Find("#sanRoot > main > div.container.right-container_2EFJr > div > div:nth-child(2) > .category-wrap_iQLoo")
+	book_nodes.Each(func(i int, s *goquery.Selection) {
+		log.Printf("%v,%s\n", i, s.Text())
+	})
+}
+
+// 起点数据榜
+// 菠萝包
+// 刺猬猫

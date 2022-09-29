@@ -20,6 +20,7 @@ func OpenWorkSpaceParse() {
 
 }
 
+// 查找书籍
 func SrcFlagParse(srcFlag string) {
 	tpp := paragraphparser.NewParagraphParser(srcFlag)
 	b, err := json.Marshal(tpp)
