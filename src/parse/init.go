@@ -17,7 +17,7 @@ var (
 )
 
 func OpenWorkSpaceParse() {
-
+	log.Println("抱歉，该功能还未开发！")
 }
 
 // 查找书籍
@@ -82,5 +82,5 @@ func DownTermAllParse(downTerm string, dwonUrl string) {
 
 // 扫描指定文件夹,判断最近修改的文件
 func ScanDir(dir string) {
-
+	log.Println("抱歉，该功能还未开发！")
 }

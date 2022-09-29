@@ -16,6 +16,7 @@ var (
 	openWorkSpace *string
 	guibool       *bool
 	web           *bool
+	timing        *int64
 )
 
 func CmdParse() {
@@ -37,6 +38,9 @@ func CmdParse() {
 
 	// 开启Web服务端
 	web = flag.Bool("web-service", false, "不打开浏览器，开启服务器")
+
+	// 开启定时任务并且开启web服务器
+	timing = flag.Int64("timing", 0, "定时任务，默认是零的话就不开启")
 
 	// 指定下载位置
 	d = flag.String(
@@ -83,5 +87,10 @@ func CmdParse() {
 	// 只是单纯的启用web Api接口
 	if *web {
 		gui.ApiStart()
+	}
+
+	// 开启定时任务
+	if *timing > 0 {
+
 	}
 }

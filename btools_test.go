@@ -63,3 +63,8 @@ func TestPanchon(t *testing.T) {
 func TestBaiDuPaChon(t *testing.T) {
 	download.BaiDuSearchBook()
 }
+
+func TestTUI(t *testing.T) {
+	// 使用Tui程序库
+
+}
