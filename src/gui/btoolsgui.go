@@ -2,10 +2,12 @@ package gui
 
 import (
 	"fmt"
+	"net/http"
 	"os/exec"
 	"runtime"
 	"strings"
 	"syscall"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -38,7 +40,10 @@ func toIndex() {
 }
 
 func start() {
-	e :=gin.Default()
+	e := gin.Default()
+	e.GET("/", func(ctx *gin.Context) {
+		ctx.Redirect(http.StatusMovedPermanently, "dist/index.html")
+	})
 	// 资源映射配置
 	static(e)
 	// 这个是Api配置
@@ -50,18 +55,25 @@ func start() {
 	}
 }
 
+func ApiStart() {
+	e := gin.Default()
+	static(e)
+	api(e)
+	err := e.Run(":8031")
+	if err != nil {
+		panic("滴滴，端口被占领，请联系程序员更换端口号！")
+	}
+}
+
 // api配置
 func api(e *gin.Engine) {
-	e.GET("/",func(ctx *gin.Context) {
-		ctx.HTML(200,"index.html",nil)
-	})
+
 }
 
 // 解决静态资源问题,办法就是给常用的全部映射
 func static(e *gin.Engine) {
 	//这个是模板目录
-	e.LoadHTMLGlob("views/**/*")
-	e.Static("/static","views/static")
+	e.Static("/static", "views/static")
 	e.Static("/dist", "./dist")
 	e.Static("/css", "./dist/css")
 	e.Static("/js", "./dist/js")

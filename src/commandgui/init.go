@@ -15,6 +15,7 @@ var (
 	d             *string
 	openWorkSpace *string
 	guibool       *bool
+	web           *bool
 )
 
 func CmdParse() {
@@ -33,6 +34,9 @@ func CmdParse() {
 
 	// 开启GUI动态网页
 	guibool = flag.Bool("gui", false, "开启图形化界面")
+
+	// 开启Web服务端
+	web = flag.Bool("web-service", false, "不打开浏览器，开启服务器")
 
 	// 指定下载位置
 	d = flag.String(
@@ -74,5 +78,10 @@ func CmdParse() {
 	// 打开gui
 	if *guibool {
 		gui.Exec()
+	}
+
+	// 只是单纯的启用web Api接口
+	if *web {
+		gui.ApiStart()
 	}
 }
