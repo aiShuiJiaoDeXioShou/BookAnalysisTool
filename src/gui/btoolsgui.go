@@ -61,7 +61,7 @@ func api(e *gin.Engine) {
 func static(e *gin.Engine) {
 	//这个是模板目录
 	e.LoadHTMLGlob("views/**/*")
-	e.Static("/static","static")
+	e.Static("/static","views/static")
 	e.Static("/dist", "./dist")
 	e.Static("/css", "./dist/css")
 	e.Static("/js", "./dist/js")
