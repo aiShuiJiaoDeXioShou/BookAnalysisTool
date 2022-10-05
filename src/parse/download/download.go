@@ -1,6 +1,7 @@
 package download
 
 import (
+	"BookAnalysisTool/src/parse/comm"
 	"bufio"
 	"fmt"
 	"io"
@@ -21,18 +22,8 @@ const (
 	downloadPath = "C:\\Users\\Public\\Documents\\小说\\"
 )
 
-type SearchBook struct {
-	Title       string `json:"title"`
-	URL         string `json:"url"`
-	Author      string `json:"author"`
-	Number      string `json:"number"`
-	State       string `json:"state"`
-	UpdateTime  int64  `json:"update_time"`
-	DownloadUrl string `json:"download_url"`
-}
-
 // 搜索指定图书的下载链接
-func SearchBookNameUrl(name string) (searchBooks []*SearchBook) {
+func SearchBookNameUrl(name string) (searchBooks []*comm.SearchBook) {
 	res, err := http.Get(baseUrl + name)
 	if err != nil {
 		log.Fatal(err)
@@ -51,7 +42,7 @@ func SearchBookNameUrl(name string) (searchBooks []*SearchBook) {
 	wgG.Add(nrs.Length())
 	nrs.Each(func(i int, s *goquery.Selection) {
 		go func() {
-			var searchBook SearchBook
+			var searchBook comm.SearchBook
 			var wg sync.WaitGroup
 
 			wg.Add(2)
@@ -168,31 +159,6 @@ func DownloadBook(name string, downPath string) {
 		}
 	}
 	OpenDownload(sb[0].DownloadUrl, downPath)
-}
-
-// 获取网络热门书籍
-// 百度数据榜
-func BaiDuSearchBook() {
-	var searchBookUrl = "https://top.baidu.com/board?platform=pc&tab=novel&tag={'category':'全部类型'}"
-	res, err := http.Get(searchBookUrl)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer res.Body.Close()
-	if res.StatusCode != 200 {
-		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
-	}
-
-	d, err := goquery.NewDocumentFromReader(res.Body)
-
-	if err != nil {
-		panic("页面没有找到，请确认链接的正确性！")
-	}
-	book_nodes := d.Find("#sanRoot > main > div.container.right-container_2EFJr > div > div:nth-child(2) > .category-wrap_iQLoo")
-	book_nodes.Each(func(i int, s *goquery.Selection) {
-		log.Printf("%v,%s\n", i, s.Text())
-	})
 }
 
 // 起点数据榜

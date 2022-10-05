@@ -6,6 +6,9 @@ import (
 	"github.com/gocolly/colly/extensions"
 )
 
+type BaiDuBookHotManagement struct {
+}
+
 type BaiDuBookHotSearch struct {
 	Image     string `json:"image"`
 	Title     string `json:"title"`
@@ -16,8 +19,13 @@ type BaiDuBookHotSearch struct {
 	Number    string `json:"number"`
 }
 
+func NewBaiDuBookHotManagement() *BaiDuBookHotManagement {
+
+	return &BaiDuBookHotManagement{}
+}
+
 // 百度热搜榜，可见数据
-func BaiDuCrawler(typestr string) *[]BaiDuBookHotSearch {
+func (b *BaiDuBookHotManagement) BaiDuCrawler(typestr string) []BaiDuBookHotSearch {
 	if typestr == "" {
 		typestr = "全部类型"
 	}
@@ -65,5 +73,10 @@ func BaiDuCrawler(typestr string) *[]BaiDuBookHotSearch {
 	c.Visit("https://top.baidu.com/board?platform=pc&tab=novel&tag={'category':'" + typestr + "'}")
 	// 这个函数要放在最后面
 	c.Wait()
-	return &hotBooks
+	return hotBooks
+}
+
+// 查看百度热搜的热搜类型
+func (b *BaiDuBookHotManagement) BaiDuTypeCrawler() {
+
 }
