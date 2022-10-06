@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"net/url"
 	"strings"
 	"testing"
 	"time"
@@ -115,4 +116,17 @@ func newGrabQuery(url string) *goquery.Document {
 	r, _ := strtools.DecodeHTMLBody(res.Body, "")
 	d, _ := goquery.NewDocumentFromReader(r)
 	return d
+}
+
+func TestBiqu(t *testing.T) {
+	bm := crawler.NewBiqupaManagement()
+	books := bm.BiqupaBook("一世之尊")
+	json, _ := strtools.MyJsonFormat(books)
+	ioutil.WriteFile("一世之尊.json", []byte(json), 0766)
+}
+
+func Test999(t *testing.T) {
+	escapeUrl := url.QueryEscape("诡秘之主")
+	fmt.Println("编码:", escapeUrl)
+
 }

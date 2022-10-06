@@ -3,6 +3,7 @@ package commandgui
 import (
 	"BookAnalysisTool/src/gui"
 	"BookAnalysisTool/src/parse"
+	"BookAnalysisTool/src/parse/crawler"
 	"flag"
 )
 
@@ -12,6 +13,7 @@ var (
 	searchBook    *string
 	downTerm      *string
 	downTermAll   *string
+	downBookBiqu  *string
 	d             *string
 	openWorkSpace *string
 	guibool       *bool
@@ -28,10 +30,13 @@ func CmdParse() {
 	searchBook = flag.String("search", "", "搜索指定名称的书籍")
 
 	// 搜索指定名称的书籍并下载
-	downTerm = flag.String("down-term", "", "搜索指定名称的书籍并下载")
+	downTerm = flag.String("down-book", "", "搜索指定名称的书籍并下载")
 
 	// 搜索指定名称相关的书籍并下载
-	downTermAll = flag.String("down-all-term", "", "搜索指定名称相关的书籍并下载")
+	downTermAll = flag.String("down-all-book", "", "搜索指定名称相关的书籍并下载")
+
+	// 如果传统书籍下载有问题，直接切换到笔趣阁去下载
+	downBookBiqu = flag.String("down-book-biqu", "", "如果传统书籍下载有问题，直接切换到笔趣阁去下载")
 
 	// 开启GUI动态网页
 	guibool = flag.Bool("gui", false, "开启图形化界面")
@@ -72,6 +77,12 @@ func CmdParse() {
 	// 下载所有相关的
 	if *downTermAll != "" {
 		parse.DownTermAllParse(*downTermAll, *d)
+	}
+
+	// 笔趣阁下载指定相关
+	if *downBookBiqu != "" {
+		bm := crawler.NewBiqupaManagement()
+		bm.BiqupaBookToTxt(*downBookBiqu, *d+*downBookBiqu)
 	}
 
 	// 打开工作区间

@@ -5,15 +5,16 @@ package crawler
 import (
 	"BookAnalysisTool/src/comm/strtools"
 	"BookAnalysisTool/src/parse/comm"
+	"bufio"
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
+	"os"
 	"strings"
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gocolly/colly"
-	"github.com/gocolly/colly/extensions"
 )
 
 type BiqupaManagement struct {
@@ -24,45 +25,69 @@ func NewBiqupaManagement() *BiqupaManagement {
 	return &BiqupaManagement{}
 }
 
-// 这个模块是常用网址用不了了，直接去笔趣阁爬
-func (biqu *BiqupaManagement) BiqupaBook(name string) (books []map[string]comm.Book) {
-	var url = fmt.Sprintf("http://www.b5200.org/modules/article/search.php?searchkey='%v'", name)
-	// 新建一个爬虫
-	var c = colly.NewCollector(
-		colly.Async(true),
-		colly.UserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36"),
-		colly.AllowedDomains("http://www.b5200.org/"),
-	)
-	// 这个用于获取章节的信息
-	chapterC := c.Clone()
+// 在笔趣阁里面获取指定书籍所有的内容
+func (biqu *BiqupaManagement) BiqupaBook(bookname string) comm.Book {
+	// 获取相关的所有书籍
+	m := biqu.BiqupaBookUrls(bookname)
+	book := m[bookname]
+	// 根据书籍链接获取所有章节链接
+	chaUrls := biqu.BiqupaChapterUrls(book.BookUrl)
+	// 将这些章节填充内容
+	biqu.BiqupaChapterContents(chaUrls)
+	book.Chapters = chaUrls
+	return book
+}
 
-	extensions.RandomUserAgent(c)
-	c.OnHTML("#hotcontent > table > tbody > tr:not(:first-child)", func(h *colly.HTMLElement) {
-		h.DOM.Each(func(i int, s *goquery.Selection) {
-			var book comm.Book
-			var mymap = make(map[string]comm.Book)
-			title := s.Find("td:nth-child(1)").Text()
-			book.Author = s.Find("td:nth-child(3)").Text()
-			book.Title = title
-			book.UpdateTime = s.Find("td:nth-child(5)").Text()
-			book.State = s.Find("td:nth-child(6)").Text()
-			book.BookUrl, _ = s.Find("td:nth-child(1)").Find("a").Attr("href")
-			mymap[title] = book
-			books = append(books, mymap)
-			chapterC.Visit(book.BookUrl)
-		})
-	})
-	// 获取所有的章节链接
-	chapterC.OnHTML("#list > dl > *", func(h *colly.HTMLElement) {
-		h.DOM.Each(func(i int, s *goquery.Selection) {
-			val, _ := s.Find("a").Attr("href")
-			log.Println(val)
-		})
-	})
-	c.Visit(url)
-	c.Wait()
+// 将指定书籍的内容转化为指定的txt文档
+func (biqu *BiqupaManagement) BiqupaBookToTxt(name, url string) {
+	b := biqu.BiqupaBook(name)
+	f, err := os.OpenFile(url, os.O_APPEND|os.O_CREATE, 0666)
+	if err != nil {
+		fmt.Println("文件打开失败", err)
+	}
+	//及时关闭file句柄
+	defer f.Close()
+	//写入文件时，使用带缓存的 *Writer
+	write := bufio.NewWriter(f)
+	write.WriteString("\n" + b.Title + "\n")
+	write.WriteString(b.Author + "\n")
+	for _, c := range b.Chapters {
+		write.WriteString("\n" + c.Title + "\n")
+		write.WriteString("\n" + c.Contexnt + "\n")
+	}
+	//Flush将缓存的文件真正写入到文件中
+	write.Flush()
+}
 
-	return
+// 这个模块是常用网址用不了了，直接去笔趣阁爬，获取所有书籍链接
+func (biqu *BiqupaManagement) BiqupaBookUrls(name string) map[string]comm.Book {
+	var url = fmt.Sprintf("http://www.b5200.org/modules/article/search.php?searchkey=%v", url.QueryEscape(name))
+	// 存放数据的链表
+	var mymap = make(map[string]comm.Book)
+	// 使用http请求，爬取页面数据
+	res, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+	if res.StatusCode != 200 {
+		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+	}
+
+	d, _ := goquery.NewDocumentFromReader(res.Body)
+	d.Find("#hotcontent > table > tbody > tr:not(:first-child)").Each(func(i int, s *goquery.Selection) {
+		var book comm.Book
+		title := strtools.ConvertToString(s.Find("td:nth-child(1)").Text(), "gbk", "utf-8")
+		book.Author = strtools.ConvertToString(s.Find("td:nth-child(3)").Text(), "gbk", "utf-8")
+		book.Title = title
+		book.UpdateTime = strtools.ConvertToString(s.Find("td:nth-child(5)").Text(), "gbk", "utf-8")
+		book.State = strtools.ConvertToString(s.Find("td:nth-child(6)").Text(), "gbk", "utf-8")
+		a_txt, _ := s.Find("td:nth-child(1)").Find("a").Attr("href")
+		book.BookUrl = strtools.ConvertToString(a_txt, "gbk", "utf-8")
+		mymap[title] = book
+	})
+
+	return mymap
 }
 
 // 打开指定书籍的url，获取所有的章节链接，然后爬取
@@ -107,11 +132,16 @@ func (biqu *BiqupaManagement) BiqupaChapterContents(chapters []*comm.Chapter) {
 		fmt.Println("正在爬取", chapter.Title, "...")
 		text_d := newGrabQuery(chapter.BiQuUrl)
 		// 寻找它的一个内容
-		content := text_d.Find("#content").Text()
+		var content string
+		text_d.Find("#content>p").Each(func(i int, s *goquery.Selection) {
+			duan := s.Text()
+			content += "\n\n" + duan
+		})
 		chapter.Contexnt = content
 		index++
 		fmt.Println(chapter.Title, "爬取结束...")
 	}
+	fmt.Println("书籍爬取完成！")
 }
 
 // 新建一个goQuery爬虫
