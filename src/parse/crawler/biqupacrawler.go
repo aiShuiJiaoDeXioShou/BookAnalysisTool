@@ -41,7 +41,7 @@ func (biqu *BiqupaManagement) BiqupaBook(bookname string) comm.Book {
 // 将指定书籍的内容转化为指定的txt文档
 func (biqu *BiqupaManagement) BiqupaBookToTxt(name, url string) {
 	b := biqu.BiqupaBook(name)
-	f, err := os.OpenFile(url, os.O_APPEND|os.O_CREATE, 0666)
+	f, err := os.OpenFile(url+".txt", os.O_APPEND|os.O_CREATE, 0666)
 	if err != nil {
 		fmt.Println("文件打开失败", err)
 	}
@@ -133,10 +133,17 @@ func (biqu *BiqupaManagement) BiqupaChapterContents(chapters []*comm.Chapter) {
 		text_d := newGrabQuery(chapter.BiQuUrl)
 		// 寻找它的一个内容
 		var content string
+		var duanNum = 0
 		text_d.Find("#content>p").Each(func(i int, s *goquery.Selection) {
 			duan := s.Text()
 			content += "\n\n" + duan
+			duanNum++
 		})
+		// 如果小于2说明爬取这本书的时候有bug，我们把所有空格换成\n\n\t\t
+		if duanNum < 2 {
+			content, _ = strtools.ReplaceStringByRegex(content, "“", "\n\t\t“")
+			content, _ = strtools.ReplaceStringByRegex(content, "。", "\n\t\t。")
+		}
 		chapter.Contexnt = content
 		index++
 		fmt.Println(chapter.Title, "爬取结束...")

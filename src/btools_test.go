@@ -10,7 +10,7 @@ import (
 	"github.com/gocolly/colly/extensions"
 )
 
-// 爬虫练习bilibili
+// 爬虫练习biquge
 func TestPanchon(t *testing.T) {
 	var queryId = "#sanRoot > main > div.container.right-container_2EFJr > div > div:nth-child(2) > .category-wrap_iQLoo"
 	var hotBooks []crawler.BaiDuBookHotSearch

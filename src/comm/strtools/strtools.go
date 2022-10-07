@@ -4,7 +4,9 @@ import (
 	"bufio"
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io"
+	"regexp"
 	"strings"
 
 	"github.com/axgle/mahonia"
@@ -87,4 +89,13 @@ func DecodeHTMLBody(body io.Reader, charset string) (io.Reader, error) {
 	}
 
 	return body, nil
+}
+
+// 替换所有的指定字符
+func ReplaceStringByRegex(str, rule, replace string) (string, error) {
+	reg, err := regexp.Compile(rule)
+	if reg == nil || err != nil {
+		return "", errors.New("正则MustCompile错误:" + err.Error())
+	}
+	return reg.ReplaceAllString(str, replace), nil
 }
