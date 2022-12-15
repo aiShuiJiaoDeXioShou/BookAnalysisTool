@@ -1,4 +1,4 @@
-package gui
+package httpstart
 
 import (
 	"BookAnalysisTool/src/publicapi"

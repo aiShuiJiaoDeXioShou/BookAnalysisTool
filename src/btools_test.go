@@ -1,7 +1,7 @@
 package main
 
 import (
-	"BookAnalysisTool/src/parse/crawler"
+	"BookAnalysisTool/src/service/crawler"
 	"log"
 	"testing"
 

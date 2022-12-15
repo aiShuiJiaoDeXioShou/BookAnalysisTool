@@ -1,7 +1,7 @@
 package main
 
 import (
-	download "BookAnalysisTool/src/parse/download"
+	download "BookAnalysisTool/src/service/download"
 	"encoding/json"
 	"fmt"
 	"os"

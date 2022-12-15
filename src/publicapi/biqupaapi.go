@@ -2,8 +2,8 @@ package publicapi
 
 import (
 	"BookAnalysisTool/src/comm/rest"
-	"BookAnalysisTool/src/parse/comm"
-	"BookAnalysisTool/src/parse/crawler"
+	"BookAnalysisTool/src/service/comm"
+	"BookAnalysisTool/src/service/crawler"
 
 	"github.com/gin-gonic/gin"
 )

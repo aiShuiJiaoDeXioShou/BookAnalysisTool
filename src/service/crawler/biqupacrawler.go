@@ -4,7 +4,7 @@ package crawler
 
 import (
 	"BookAnalysisTool/src/comm/strtools"
-	"BookAnalysisTool/src/parse/comm"
+	"BookAnalysisTool/src/service/comm"
 	"bufio"
 	"fmt"
 	"log"

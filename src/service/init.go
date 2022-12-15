@@ -1,8 +1,8 @@
 package parse
 
 import (
-	"BookAnalysisTool/src/parse/download"
-	"BookAnalysisTool/src/parse/paragraphparser"
+	"BookAnalysisTool/src/service/download"
+	"BookAnalysisTool/src/service/paragraphparser"
 	"bytes"
 	"encoding/json"
 	"io/fs"

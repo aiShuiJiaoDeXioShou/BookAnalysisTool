@@ -2,8 +2,8 @@ package main
 
 import (
 	"BookAnalysisTool/src/comm/strtools"
-	"BookAnalysisTool/src/parse/comm"
-	"BookAnalysisTool/src/parse/crawler"
+	"BookAnalysisTool/src/service/comm"
+	"BookAnalysisTool/src/service/crawler"
 	"fmt"
 	"io/ioutil"
 	"log"

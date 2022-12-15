@@ -1,7 +1,9 @@
 package main
 
-import "BookAnalysisTool/src/commandgui"
+import (
+	"BookAnalysisTool/src/command"
+)
 
 func main() {
-	commandgui.CmdParse()
+	command.CmdParse()
 }

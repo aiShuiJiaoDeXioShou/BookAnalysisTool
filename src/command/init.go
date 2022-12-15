@@ -1,9 +1,9 @@
-package commandgui
+package command
 
 import (
-	"BookAnalysisTool/src/gui"
-	"BookAnalysisTool/src/parse"
-	"BookAnalysisTool/src/parse/crawler"
+	"BookAnalysisTool/src/httpstart"
+	parse "BookAnalysisTool/src/service"
+	"BookAnalysisTool/src/service/crawler"
 	"flag"
 )
 
@@ -92,12 +92,12 @@ func CmdParse() {
 
 	// 打开gui
 	if *guibool {
-		gui.Exec()
+		httpstart.Exec()
 	}
 
 	// 只是单纯的启用web Api接口
 	if *web {
-		gui.ApiStart()
+		httpstart.ApiStart()
 	}
 
 	// 开启定时任务

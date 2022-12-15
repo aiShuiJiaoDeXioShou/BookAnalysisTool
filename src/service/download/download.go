@@ -1,7 +1,7 @@
 package download
 
 import (
-	"BookAnalysisTool/src/parse/comm"
+	"BookAnalysisTool/src/service/comm"
 	"bufio"
 	"fmt"
 	"io"
