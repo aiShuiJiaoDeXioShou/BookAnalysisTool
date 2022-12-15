@@ -4,6 +4,8 @@ go 1.18
 
 require github.com/charmbracelet/bubbletea v0.22.1
 
+require github.com/nu7hatch/gouuid v0.0.0-20131221200532-179d4d0c4d8d // indirect
+
 require (
 	github.com/PuerkitoBio/goquery v1.8.0 // indirect
 	github.com/andybalholm/cascadia v1.3.1 // indirect
@@ -13,11 +15,13 @@ require (
 	github.com/axgle/mahonia v0.0.0-20180208002826-3358181d7394 // indirect
 	github.com/containerd/console v1.0.3 // indirect
 	github.com/djimenez/iconv-go v0.0.0-20160305225143-8960e66bd3da // indirect
+	github.com/fsnotify/fsnotify v1.6.0
 	github.com/gin-contrib/sse v0.1.0 // indirect
 	github.com/gin-gonic/gin v1.8.1 // indirect
 	github.com/go-playground/locales v0.14.0 // indirect
 	github.com/go-playground/universal-translator v0.18.0 // indirect
 	github.com/go-playground/validator/v10 v10.11.1 // indirect
+	github.com/go-toast/toast v0.0.0-20190211030409-01e6764cf0a4
 	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/goccy/go-json v0.9.11 // indirect
 	github.com/gocolly/colly v1.2.0 // indirect

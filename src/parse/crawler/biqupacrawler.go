@@ -84,10 +84,32 @@ func (biqu *BiqupaManagement) BiqupaBookUrls(name string) map[string]comm.Book {
 		book.State = strtools.ConvertToString(s.Find("td:nth-child(6)").Text(), "gbk", "utf-8")
 		a_txt, _ := s.Find("td:nth-child(1)").Find("a").Attr("href")
 		book.BookUrl = strtools.ConvertToString(a_txt, "gbk", "utf-8")
+		// 获取书籍封面数据
+		// book.BookWebUrl = strtools.ConvertToString(getBookImage(book.BookUrl), "gbk", "utf-8")
 		mymap[title] = book
 	})
-
+	d.Clone()
 	return mymap
+}
+
+func getBookImage(url string) string {
+	// 使用http请求，爬取页面数据
+	res, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+	if res.StatusCode != 200 {
+		log.Fatalf("status code error: %d %s", res.StatusCode, res.Status)
+	}
+
+	d, _ := goquery.NewDocumentFromReader(res.Body)
+	val, exists := d.Find("#fmimg").Find("img").Attr("src")
+	if !exists {
+		log.Println("封面不存在!")
+	}
+	d.Clone()
+	return val
 }
 
 // 打开指定书籍的url，获取所有的章节链接，然后爬取
@@ -141,14 +163,35 @@ func (biqu *BiqupaManagement) BiqupaChapterContents(chapters []*comm.Chapter) {
 		})
 		// 如果小于2说明爬取这本书的时候有bug，我们把所有空格换成\n\n\t\t
 		if duanNum < 2 {
-			content, _ = strtools.ReplaceStringByRegex(content, "“", "\n\t\t“")
-			content, _ = strtools.ReplaceStringByRegex(content, "。", "\n\t\t。")
+			content, _ = strtools.ReplaceStringByRegex(content, "“", "“\n\t\t")
+			content, _ = strtools.ReplaceStringByRegex(content, "。", "。\n\t\t")
 		}
 		chapter.Contexnt = content
 		index++
 		fmt.Println(chapter.Title, "爬取结束...")
 	}
 	fmt.Println("书籍爬取完成！")
+}
+
+// 爬取单个章节内容
+func (biqu *BiqupaManagement) BiqupaOneChapterContent(chapter *comm.Chapter) {
+	fmt.Println("正在爬取", chapter.Title, "...")
+	text_d := newGrabQuery(chapter.BiQuUrl)
+	// 寻找它的一个内容
+	var content string
+	var duanNum = 0
+	text_d.Find("#content>p").Each(func(i int, s *goquery.Selection) {
+		duan := s.Text()
+		content += "\n\n" + duan
+		duanNum++
+	})
+	// 如果小于2说明爬取这本书的时候有bug，我们把所有空格换成\n\n\t\t
+	if duanNum < 2 {
+		content, _ = strtools.ReplaceStringByRegex(content, "“", "“\n\t\t")
+		content, _ = strtools.ReplaceStringByRegex(content, "。", "。\n\t\t")
+	}
+	chapter.Contexnt = content
+	fmt.Println(chapter.Title, "爬取结束...")
 }
 
 // 新建一个goQuery爬虫

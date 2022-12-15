@@ -1,6 +1,7 @@
 package gui
 
 import (
+	"BookAnalysisTool/src/publicapi"
 	"fmt"
 	"net/http"
 	"os/exec"
@@ -67,7 +68,7 @@ func ApiStart() {
 
 // api配置
 func api(e *gin.Engine) {
-
+	publicapi.StartApi(e)
 }
 
 // 解决静态资源问题,办法就是给常用的全部映射

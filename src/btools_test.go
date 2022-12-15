@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/fsnotify/fsnotify"
 	"github.com/gocolly/colly"
 	"github.com/gocolly/colly/extensions"
 )
@@ -62,4 +63,40 @@ func TestPanchon(t *testing.T) {
 func TestTUI(t *testing.T) {
 	// 使用Tui程序库
 
+}
+
+// 使用文件监听库
+func TestFsWacth(t *testing.T) {
+	w, err := fsnotify.NewWatcher()
+	if err != nil {
+		panic("监听失败!")
+	}
+	defer w.Close()
+
+	// 启动监听事件,我们创建一个协程
+	go func() {
+		for {
+			select {
+			case event, ok := <-w.Events:
+				if !ok {
+					return
+				}
+				log.Println("event:", event)
+				if event.Has(fsnotify.Write) {
+					log.Println("写入的文件内容为:", event.Name)
+				}
+			case err, ok := <-w.Errors:
+				if !ok {
+					return
+				}
+				log.Println(err)
+			}
+		}
+	}()
+	// 添加监听的文件夹
+	err = w.Add("D:\\wordtree")
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+	<-make(chan struct{})
 }
